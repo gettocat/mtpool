@@ -99,7 +99,7 @@ pool.incrementWorkerCount(count) //add count workers to pool
 ```ts
 pool.decrementWorkerCount(count) //remove count workers from pool.
 ```
-*Caution: you can loose worker progress and worker queue, better use this method after pool event* `empty`
+*Caution: you can loose worker progress and worker queue, better use this method `decrementWorkerCount` after pool event* `empty`
 
 ```ts
 pool.terminateWorkers(force = false): Promise<any[]> //terminate workers
@@ -131,15 +131,15 @@ class PoolStats {
 
 ### Pool Events
 
-`ready` | `empty params` - fires when all workers inited with promise from `init` method in workerApp
-`empty` | `empty params` - fires when queue of workers and pool queue is 0. No have work
-`queue` | `count` - fires when pool queue updating
-`workerQueue` | ` { workerId, count } ` fires when worker queue updating
-`workerEvent` | `{ event, workerId }` - fires when some event sending from worker
-`workerRequest` | `{ event, workerId, callback }` - fires when worker send request from workerApp (with `WorkerApp.request` method). After pool handle this request, handler must call  `callback(response)`.
-`workerProcessed` | `{ data, workerId }` - fires when task processed by worker. 
-`inited` | `workerIndex` - fires when worker inited
-`debug` | `[poolName, Date, ...debugInfo]` - get debug information from pool and workers 
+[*] `ready` | `empty params` - fires when all workers inited with promise from `init` method in workerApp
+[*] `empty` | `empty params` - fires when queue of workers and pool queue is 0. No have work
+[*] `queue` | `count` - fires when pool queue updating
+[*] `workerQueue` | ` { workerId, count } ` fires when worker queue updating
+[*] `workerEvent` | `{ event, workerId }` - fires when some event sending from worker
+[*] `workerRequest` | `{ event, workerId, callback }` - fires when worker send request from workerApp (with `WorkerApp.request` method). After pool handle this request, handler must call  `callback(response)`.
+[*] `workerProcessed` | `{ data, workerId }` - fires when task processed by worker. 
+[*] `inited` | `workerIndex` - fires when worker inited
+[*] `debug` | `[poolName, Date, ...debugInfo]` - get debug information from pool and workers 
 
 ### WorkerApp methods
 
