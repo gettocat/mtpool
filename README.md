@@ -99,7 +99,7 @@ pool.incrementWorkerCount(count) //add count workers to pool
 ```ts
 pool.decrementWorkerCount(count) //remove count workers from pool.
 ```
-*Caution: you can loose worker progress and worker queue, better use this method `decrementWorkerCount` after pool event* `empty`
+**Caution: you can loose worker progress and worker queue, better use this method `decrementWorkerCount` after pool event `empty`**
 
 ```ts
 pool.terminateWorkers(force = false): Promise<any[]> //terminate workers
@@ -131,15 +131,15 @@ class PoolStats {
 
 ### Pool Events
 
-[*] `ready` | `empty params` - fires when all workers inited with promise from `init` method in workerApp
-[*] `empty` | `empty params` - fires when queue of workers and pool queue is 0. No have work
-[*] `queue` | `count` - fires when pool queue updating
-[*] `workerQueue` | ` { workerId, count } ` fires when worker queue updating
-[*] `workerEvent` | `{ event, workerId }` - fires when some event sending from worker
-[*] `workerRequest` | `{ event, workerId, callback }` - fires when worker send request from workerApp (with `WorkerApp.request` method). After pool handle this request, handler must call  `callback(response)`.
-[*] `workerProcessed` | `{ data, workerId }` - fires when task processed by worker. 
-[*] `inited` | `workerIndex` - fires when worker inited
-[*] `debug` | `[poolName, Date, ...debugInfo]` - get debug information from pool and workers 
+* `ready` | `empty params` - fires when all workers inited with promise from `init` method in workerApp
+* `empty` | `empty params` - fires when queue of workers and pool queue is 0. No have work
+* `queue` | `count` - fires when pool queue updating
+* `workerQueue` | ` { workerId, count } ` fires when worker queue updating
+* `workerEvent` | `{ event, workerId }` - fires when some event sending from worker
+* `workerRequest` | `{ event, workerId, callback }` - fires when worker send request from workerApp (with `WorkerApp.request` method). After pool handle this request, handler must call  `callback(response)`.
+* `workerProcessed` | `{ data, workerId }` - fires when task processed by worker. 
+* `inited` | `workerIndex` - fires when worker inited
+* `debug` | `[poolName, Date, ...debugInfo]` - get debug information from pool and workers 
 
 ### WorkerApp methods
 
@@ -148,12 +148,18 @@ worker.start() // start worker
 ```
 
 ```js
-worker.init() 
-```
-Must be reimplemented in child class. And must return Promise. WorkerApp invoke this method after start, and when promise is done - send `init` event to pool.
-
-```js
-worker.processTask()
+class WorkerExample extends WorkerApp {
+    init() {
+        return new Promise((resolve, reject) => {
+            //init worker Data, for example init db connection
+            resolve();//after releasing promise - will be send to pool event inited
+        })
+    }
+    processTask(taskdata) {
+        //must be reimplemented in child class. Must return promise.
+        return Promise.resolve();
+    }
+}
 ```
 Must be reimplemented in child class. And must return Promise. WorkerApp invoke this method when new task received from pool, and when promise is done - send `workerEvent(name='processed')` event to pool.
 
